@@ -12,7 +12,7 @@ class DQN(nn.Module):
         self.dropout = nn.Dropout(p=0.5)
 
     def forward(self, observation):
-        x = torch.Tensor(observation).to("cuda")
+        x = torch.Tensor(observation).to("cuda" if torch.cuda.is_available() else "cpu")
         x = self.fc1(x)
         x = nn.ReLU()(x)
         x = self.dropout(x)

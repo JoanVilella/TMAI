@@ -14,6 +14,9 @@ from tmai.env.utils.GameInteraction import (
 )
 from tmai.env.utils.GameLaunch import GameLauncher
 
+import sys
+sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
+
 ArrowsActionSpace = MultiBinary((4,))  # none up down right left
 ControllerActionSpace = Box(
     low=np.array([0.0, -1.0]), high=np.array([1.0, 1.0]), shape=(2,), dtype=np.float32
@@ -65,6 +68,7 @@ class TrackmaniaEnv(Env):
 
     def step(self, action):
         self.last_action = action
+        print(f"step: {action}") # Array with 2 values
         # plays action
         self.action_to_command(action)
         done = (
@@ -103,6 +107,7 @@ class TrackmaniaEnv(Env):
 
     def _continuous_action_to_command(self, action):
         gas, steer = action
+        # print(f"gas: {gas}, steer: {steer}")
         self.input_manager.play_gas(gas)
         self.input_manager.play_steer(steer)
 

@@ -1,6 +1,10 @@
 import torch
 import torch.optim as optim
 import torch.nn as nn
+
+import sys
+sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
+
 from tmai.env.TMNFEnv import TrackmaniaEnv
 from tmai.training.utils import Buffer, Transition, play_episode
 from tmai.agents.DQN_agent import EpsilonGreedyDQN
@@ -27,10 +31,14 @@ class DQN_trainer:
         while len(self.buffer) < self.batch_size:
             episode = play_episode(self.agent, self.env)
             episode = filter(lambda transition: not transition.done, episode)
-            self.buffer.append_episode(list(episode))
+            self.buffer.append_multiple(list(episode))
+            # self.buffer.append_episode(list(episode))
+            # self.buffer.append(list(episode))
 
     def optimze_step(self):
         batch = self.buffer.sample(self.batch_size)
+        # Print all the attributes of the first element of the batch        
+
         inv_map = {tuple(v): k for k, v in self.agent.action_correspondance.items()}
         state_batch = torch.tensor(
             np.array([t.state for t in batch]), dtype=torch.float
@@ -80,12 +88,18 @@ class DQN_trainer:
                 step += 1
                 self.env.render()
                 self.optimze_step()
-
-            self.buffer.append_episode(episode)
+            
+            self.buffer.append_multiple(episode)
+            # self.buffer.append_episode(episode)
+            # self.buffer.append(episode)
             if epoch % self.target_update == 0:
                 self.agent.target.load_state_dict(self.agent.policy.state_dict())
 
 
+
+
+
 if __name__ == "__main__":
     trainer = DQN_trainer(N_epochs=200)
+    print("training")
     trainer.train()
