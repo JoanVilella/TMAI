@@ -4,6 +4,9 @@ import numpy as np
 import random
 from typing import Generic, Iterable, TypeVar
 
+import sys
+sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
+
 from tmai.agents.agent import Agent, RandomGamepadAgent
 from tmai.env.TMNFEnv import TrackmaniaEnv
 
@@ -69,25 +72,51 @@ class TransitionBuffer(Buffer[Transition]):
 def play_episode(
     agent: Agent, env: TrackmaniaEnv, render=False, act_value=None
 ) -> Episode:
+    # Lista para almacenar las transiciones del episodio
     episode = []
+    
+    # Reinicia el entorno y obtiene la primera observación
     observation = env.reset()
+    
+    # Bandera que indica si el episodio ha terminado
     done = False
+    
+    # Contador de pasos en el episodio
     step = 0
+    
+    # Bucle principal que simula un episodio hasta que termine
     while not done:
+        # Guarda la observación anterior
         prev_obs = observation
+        
+        # Determina la acción a tomar, ya sea mediante el agente o una función de valor externa
         if act_value is not None:
             action = act_value()
         else:
             action = agent.act(observation)
+        
+        # Imprime la acción tomada (para propósitos de depuración)
         print(action)
+        
+        # Ejecuta la acción en el entorno y obtiene la nueva observación, recompensa y estado de finalización
         observation, reward, done, info = env.step(action)
+        
+        # Crea una transición con la información del paso actual
         transition = Transition(prev_obs, action, observation, reward, done)
+        
+        # Agrega la transición a la lista del episodio
         episode.append(transition)
+        
+        # Incrementa el contador de pasos
         step += 1
+        
+        # Si se especifica, muestra visualmente el entorno en cada paso
         if render:
             env.render()
 
+    # Devuelve la lista de transiciones que forman el episodio
     return episode
+
 
 
 if __name__ == "__main__":

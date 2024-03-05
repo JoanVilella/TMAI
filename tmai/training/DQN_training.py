@@ -36,8 +36,7 @@ class DQN_trainer:
             # self.buffer.append(list(episode))
 
     def optimze_step(self):
-        batch = self.buffer.sample(self.batch_size)
-        # Print all the attributes of the first element of the batch        
+        batch = self.buffer.sample(self.batch_size)     
 
         inv_map = {tuple(v): k for k, v in self.agent.action_correspondance.items()}
         state_batch = torch.tensor(
@@ -81,7 +80,7 @@ class DQN_trainer:
                 action = self.agent.act(observation)
                 action[0] = 1
                 action[1] = 0
-                print(action)
+                # print(action)
                 observation, reward, done, info = self.env.step(action)
                 transition = Transition(prev_obs, action, observation, reward, done)
                 episode.append(transition)
@@ -95,11 +94,14 @@ class DQN_trainer:
             if epoch % self.target_update == 0:
                 self.agent.target.load_state_dict(self.agent.policy.state_dict())
 
+            print(f"##################")
+            print(f"epoch: {epoch}")
+            print(f"##################")
 
-
+        print("Training finished")
 
 
 if __name__ == "__main__":
-    trainer = DQN_trainer(N_epochs=200)
+    trainer = DQN_trainer(N_epochs=100)
     print("training")
     trainer.train()
