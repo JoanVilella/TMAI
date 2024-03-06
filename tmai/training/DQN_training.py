@@ -99,6 +99,10 @@ class DQN_trainer:
             print(f"##################")
 
         print("Training finished")
+        self.save_model()
+
+    def save_model(self):
+        torch.save(self.agent.policy.state_dict(), "model.pth")
 
 
 if __name__ == "__main__":
