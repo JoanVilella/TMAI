@@ -75,7 +75,7 @@ class TrackmaniaEnv(Env):
 
     def step(self, action):
         self.last_action = action
-        print(f"action: {action}") # Array with 2 values
+        # print(f"action: {action}") # Array with 2 values
         # plays action
         self.action_to_command(action)
         done = (
@@ -108,10 +108,8 @@ class TrackmaniaEnv(Env):
 
     def action_to_command(self, action):
         if isinstance(self.action_space, MultiBinary):
-            print("discrete action")
             return self._discrete_action_to_command(action)
         elif isinstance(self.action_space, Box):
-            print("continuous action")
             return self._continuous_action_to_command(action)
 
     def _continuous_action_to_command(self, action):
@@ -147,7 +145,7 @@ class TrackmaniaEnv(Env):
 
     @property
     def observation(self):
-        return np.concatenate([self.viewer.get_obs(), [self.speed / 400]])
+        return np.concatenate([self.viewer.get_obs(), [self.speed / 400]]) # Distancia de los rayos y la velocidad normalizada
 
     @property
     def reward(self):

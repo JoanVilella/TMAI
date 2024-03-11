@@ -23,6 +23,9 @@ class DQN_trainer:
         self.agent = EpsilonGreedyDQN(
             input_size=self.env.observation_space.shape[0], device=self.device
         )
+
+        # print input size
+        print(self.env.observation_space.shape[0]) # 17
         self.optimizer = optim.Adam(self.agent.policy.parameters(), lr=0.001)
         self.loss = nn.SmoothL1Loss()
         self.fill_buffer()
@@ -69,24 +72,33 @@ class DQN_trainer:
         self.optimizer.step()
 
     def train(self):
+
+        cumulative_reward_list = []
+        episode_length_list = []
+
         for epoch in range(self.N_epochs):
             self.env.reset()
             episode = []
             observation = self.env.reset()
             done = False
             step = 0
+            cumulative_reward = 0 # Initialize cumulative reward
+
             while not done:
                 prev_obs = observation
                 action = self.agent.act(observation)
                 action[0] = 1
                 action[1] = 0
-                # print(action)
                 observation, reward, done, info = self.env.step(action)
                 transition = Transition(prev_obs, action, observation, reward, done)
                 episode.append(transition)
                 step += 1
                 self.env.render()
                 self.optimze_step()
+
+            # Save metrics
+            cumulative_reward_list.append(cumulative_reward)
+            episode_length_list.append(step)
             
             self.buffer.append_multiple(episode)
             # self.buffer.append_episode(episode)
@@ -94,18 +106,23 @@ class DQN_trainer:
             if epoch % self.target_update == 0:
                 self.agent.target.load_state_dict(self.agent.policy.state_dict())
 
-            print(f"##################")
             print(f"epoch: {epoch}")
-            print(f"##################")
 
-        print("Training finished")
-        self.save_model()
+        average_cumulative_reward = sum(cumulative_reward_list) / len(cumulative_reward_list)
+        average_episode_length = sum(episode_length_list) / len(episode_length_list)
+
+        print(f"Average cumulative reward: {average_cumulative_reward}")
+        print(f"Average episode length: {average_episode_length}")
+
+        # Save the metrics
+        np.save("cumulative_reward_list.npy", cumulative_reward_list)
+        np.save("episode_length_list.npy", episode_length_list)
 
     def save_model(self):
         torch.save(self.agent.policy.state_dict(), "model.pth")
 
 
 if __name__ == "__main__":
-    trainer = DQN_trainer(N_epochs=100)
+    trainer = DQN_trainer(N_epochs=100000)
     print("training")
     trainer.train()

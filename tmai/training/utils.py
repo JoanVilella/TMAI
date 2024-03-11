@@ -96,7 +96,7 @@ def play_episode(
             action = agent.act(observation)
         
         # Imprime la acción tomada (para propósitos de depuración)
-        print(action)
+        # print(action)
         
         # Ejecuta la acción en el entorno y obtiene la nueva observación, recompensa y estado de finalización
         observation, reward, done, info = env.step(action)
