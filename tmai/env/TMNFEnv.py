@@ -85,12 +85,12 @@ class TrackmaniaEnv(Env):
         )
         self.total_reward += self.reward
         self.n_steps += 1
-        info = {}
+        info = self.state.time
         time.sleep(self.command_frequency * 10e-3)
         return self.observation, self.reward, done, info
 
     def reset(self):
-        print("reset")
+        # print("reset")
         self.total_reward = 0.0
         self.n_steps = 0
         self._restart_race()
@@ -105,6 +105,10 @@ class TrackmaniaEnv(Env):
         print(f"total reward: {self.total_reward}")
         print(f"speed: {self.speed}")
         print(f"time = {self.state.time}")
+
+    def render_return(self):
+        return self.total_reward, self.speed, self.state.time
+    
 
     def action_to_command(self, action):
         if isinstance(self.action_space, MultiBinary):
