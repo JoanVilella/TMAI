@@ -120,6 +120,6 @@ class DQN_trainer:
 
 
 if __name__ == "__main__":
-    trainer = DQN_trainer(N_epochs=2)
+    trainer = DQN_trainer(N_epochs=20)
     print("training")
     trainer.train()

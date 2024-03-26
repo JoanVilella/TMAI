@@ -18,6 +18,11 @@ class SimStateClient(Client):
     def on_run_step(self, iface, _time: int):
         self.sim_state = iface.get_simulation_state()
 
+    def on_checkpoint_count_changed(self, iface, current: int, target: int):
+        if current == target:
+            iface.prevent_simulation_finish()
+            iface.give_up()   
+
 
 class ThreadedClient:
     """

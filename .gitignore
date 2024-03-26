@@ -6,6 +6,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+cumulative_reward_list.npy
+episode_length_list.npy
+
 # C extensions
 *.so
 
