@@ -2,6 +2,12 @@ import cv2
 import numpy as np
 import win32.win32gui as wind32
 from mss import mss
+import datetime
+import os
+
+import sys
+sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
+
 from tmai.env.utils.constants import GAME_WINDOW_NAME
 
 

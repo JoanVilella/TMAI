@@ -1,8 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_metrics(cumulative_reward_list, episode_length_list):
+def plot_metrics(cumulative_reward_list, episode_length_list, step=10):
     epochs = np.arange(1, len(cumulative_reward_list) + 1)
+
+    # Tomar cada "step" elemento para mostrar en el gráfico
+    epochs = epochs[::step]
+    cumulative_reward_list = cumulative_reward_list[::step]
+    episode_length_list = episode_length_list[::step]
 
     plt.figure(figsize=(10, 5))
 
@@ -23,8 +28,8 @@ def plot_metrics(cumulative_reward_list, episode_length_list):
 
 if __name__ == "__main__":
     # Cargar los datos de las métricas desde los archivos .npy
-    cumulative_reward_list = np.load('cumulative_reward_list.npy')
-    episode_length_list = np.load('episode_length_list.npy')
+    cumulative_reward_list = np.load('Baseline_results/cumulative_reward_list.npy')
+    episode_length_list = np.load('Baseline_results/episode_length_list.npy')
 
     # Llama a la función para graficar las métricas
-    plot_metrics(cumulative_reward_list, episode_length_list)
+    plot_metrics(cumulative_reward_list, episode_length_list, step=100)
