@@ -32,6 +32,8 @@ class GameViewer:
         return getWindowGeometry(self.window_name)
 
     def process_screen(self, screenshot: np.ndarray) -> np.ndarray:
+        output_dir = "C:/Users/jvile/Desktop/TFG/TMAI/images"
+
         baw = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
         baw = cv2.threshold(baw, 32, 255, cv2.THRESH_BINARY)[1]
         baw = cv2.Canny(baw, threshold1=100, threshold2=300)
@@ -43,6 +45,17 @@ class GameViewer:
         baw = cv2.resize(baw, (128, 128))
         height = len(baw)
         cut = baw[height // 2 : height // 2 + 32, :]
+
+        # Generar un nombre de archivo único basado en la marca de tiempo
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"image_{timestamp}.png"
+        
+        # Combinar la ruta del directorio de salida con el nombre de archivo
+        output_path = os.path.join(output_dir, filename)
+        
+        # Guardar la imagen resultante en local
+        cv2.imwrite(output_path, cut)
+
         return cut
 
     def show_rays(self, frame):
