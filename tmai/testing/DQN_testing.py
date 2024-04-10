@@ -47,7 +47,7 @@ class DQNTester:
                 observation, reward, done, time = self.env.step(action)
                 transition = Transition(prev_obs, action, observation, reward, done)
                 episode.append(transition)
-                time += 1
+                step += 1
                 # self.env.render()
                 # Omitir el paso de optimización, ya que no estamos entrenando aquí
 
