@@ -3,6 +3,8 @@ images/
 
 Baseline_results/
 
+models/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

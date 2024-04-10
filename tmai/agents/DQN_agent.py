@@ -2,6 +2,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 from tmai.agents.agent import Agent
+import os
+from datetime import datetime
 
 
 class DQN(nn.Module):
@@ -55,6 +57,18 @@ class EpsilonGreedyDQN(Agent):
         return self.action_correspondance[
             np.random.randint(0, len(self.action_correspondance))
         ]
+    
+    def save_model(self, path):
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            policy_model_name = f"policy_model_{timestamp}.pth"
+            target_model_name = f"target_model_{timestamp}.pth"
+            torch.save(self.policy.state_dict(), os.path.join(path, policy_model_name))
+            torch.save(self.target.state_dict(), os.path.join(path, target_model_name))
+
+
+    def load_model(self, path, policy_model_name="policy_model.pth", target_model_name="target_model.pth"):
+        self.policy.load_state_dict(torch.load(os.path.join(path, policy_model_name)))
+        self.target.load_state_dict(torch.load(os.path.join(path, target_model_name)))
 
 
 if __name__ == "__main__":

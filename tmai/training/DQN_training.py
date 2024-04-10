@@ -113,11 +113,9 @@ class DQN_trainer:
 
             print(f"epoch: {epoch}")
 
+        self.agent.save_model("C:/Users/jvile/Desktop/TFG/TMAI/models")
+
         print("training finished")
-
-    def save_model(self):
-        torch.save(self.agent.policy.state_dict(), "model.pth")
-
 
 if __name__ == "__main__":
     trainer = DQN_trainer(N_epochs=10)
