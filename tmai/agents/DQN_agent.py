@@ -36,6 +36,9 @@ class EpsilonGreedyDQN(Agent):
             for k in range(2)
             for l in range(2)
         }
+
+        # print the length of the action correspondance
+        print(len(self.action_correspondance))        
         self.policy = DQN(input_size, len(self.action_correspondance))
         self.target = DQN(input_size, len(self.action_correspondance))
         self.policy.to(self.device)
