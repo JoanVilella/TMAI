@@ -21,7 +21,12 @@ class SimStateClient(Client):
     def on_checkpoint_count_changed(self, iface, current: int, target: int):
         if current == target:
             iface.prevent_simulation_finish()
-            iface.give_up()   
+            iface.give_up()
+
+            # Write in a file the hour when the simulation ended
+            with open("end_time.txt", "w") as f:
+                f.write(time.strftime("%H:%M:%S"))
+
 
 
 class ThreadedClient:
