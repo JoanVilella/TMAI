@@ -91,7 +91,7 @@ class DQN_trainer:
                 transition = Transition(prev_obs, action, observation, reward, done)
                 episode.append(transition)
                 step += 1
-                self.env.render()
+                # self.env.render()
                 self.optimze_step()   
             
             # Save the total reward of the episode
@@ -118,6 +118,6 @@ class DQN_trainer:
         print("training finished")
 
 if __name__ == "__main__":
-    trainer = DQN_trainer(N_epochs=10)
+    trainer = DQN_trainer(N_epochs=8000)
     print("training")
     trainer.train()

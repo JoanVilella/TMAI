@@ -80,7 +80,7 @@ class TrackmaniaEnv(Env):
         self.action_to_command(action)
         done = (
             True
-            if self.n_steps >= self.max_steps or self.total_reward < -300
+            if self.n_steps >= self.max_steps or self.total_reward < -300 #TODO 300
             else False
         )
         self.total_reward += self.reward
@@ -151,6 +151,33 @@ class TrackmaniaEnv(Env):
     def observation(self):
         return np.concatenate([self.viewer.get_obs(), [self.speed / 400]]) # Distancia de los rayos y la velocidad normalizada
 
+    
+    @property
+    def reward(self):
+
+        speed = self.speed
+        speed_reward = speed
+        constant_reward = -0.3
+
+        roll_reward = -abs(self.state.yaw_pitch_roll[2]) / 3.15
+        
+        if min(self.observation) < 0.06:
+            # Si el valor mínimo de la observación es menor que 0.06, se aplica una penalización adicional de -100
+            constant_reward -= 50
+        elif 10 < speed < 30: # TODO 100
+            # Si la velocidad está entre 10 y 100, se establece una recompensa constante de -1 y se anula la recompensa del gas
+            speed_reward += 50 # TODO 1
+        elif speed < 10 or speed > 50:
+            # Si la velocidad es inferior a 10, se incrementa un contador de pasos de baja velocidad y se aplica una penalización adicional de -5 por cada paso
+
+            speed_reward -= 50 
+
+
+        return speed_reward + roll_reward + constant_reward 
+            
+
+
+    """    
     @property
     def reward(self):
         # Calcula la recompensa basada en la velocidad del vehículo
@@ -164,7 +191,7 @@ class TrackmaniaEnv(Env):
         constant_reward = -0.3
 
         # Calcula una recompensa basada en la acción del gas
-        gas_reward = self.last_action[0] * 2  # Recompensa proporcional a la acción del gas multiplicada por 2
+        gas_reward = self.last_action[0]  # Recompensa proporcional a la acción del gas multiplicada por 2 TODO * 2
 
         # Condiciones adicionales que introducen penalizaciones
         if self.last_action[0] < 0:
@@ -174,11 +201,11 @@ class TrackmaniaEnv(Env):
 
         if min(self.observation) < 0.06:
             # Si el valor mínimo de la observación es menor que 0.06, se aplica una penalización adicional de -100
-            constant_reward -= 100
+            constant_reward -= 50 # TODO 100
 
-        elif 10 < speed < 100:
+        elif 10 < speed < 30: # TODO 100
             # Si la velocidad está entre 10 y 100, se establece una recompensa constante de -1 y se anula la recompensa del gas
-            speed_reward = -1
+            speed_reward = -0.5 # TODO 1
             gas_reward = 0
 
         elif speed < 10:
@@ -189,8 +216,13 @@ class TrackmaniaEnv(Env):
 
         else:
             # Si no se cumple ninguna de las condiciones anteriores, se reinicia el contador de pasos de baja velocidad
-            self.low_speed_steps = 0
+            self.low_speed_steps = 0        
+
+        # Print the speed reward, roll reward, constant reward and gas reward
+        print(f"speed reward: {speed_reward}, roll reward: {roll_reward}, constant reward: {constant_reward}, gas reward: {gas_reward}")
+
 
         # Devuelve la suma de todas las recompensas y penalizaciones calculadas
         return speed_reward + roll_reward + constant_reward + gas_reward
+    """
 
