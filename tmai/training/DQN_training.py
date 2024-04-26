@@ -10,6 +10,12 @@ from tmai.training.utils import Buffer, Transition, play_episode
 from tmai.agents.DQN_agent import EpsilonGreedyDQN
 import numpy as np
 
+"""
+    Gamma (discount factor): If we set gamma to zero, the agent completely ignores the future rewards. 
+        Such agents only consider current rewards. On the other hand, if we set gamma to 1, 
+        the algorithm would look for high rewards in the long term. A high gamma value might prevent 
+        conversion: summing up non-discounted rewards leads to having high Q-values.
+"""
 
 class DQN_trainer:
     def __init__(self, batch_size=32, N_epochs=100):
@@ -118,6 +124,6 @@ class DQN_trainer:
         print("training finished")
 
 if __name__ == "__main__":
-    trainer = DQN_trainer(N_epochs=8000)
+    trainer = DQN_trainer(N_epochs=10000)
     print("training")
     trainer.train()

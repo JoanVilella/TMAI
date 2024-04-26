@@ -23,10 +23,9 @@ class SimStateClient(Client):
             iface.prevent_simulation_finish()
             iface.give_up()
 
-            # Write in a file the hour when the simulation ended
-            with open("end_time.txt", "w") as f:
-                f.write(time.strftime("%H:%M:%S"))
-
+            # Write the time when the simulation ended to a file
+            with open("end_time.txt", "a") as f:
+                f.write(time.strftime("%H:%M:%S") + "\n")
 
 
 class ThreadedClient:

@@ -1,9 +1,16 @@
 import numpy as np
 import torch
 import torch.nn as nn
+
+import sys
+sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
+
 from tmai.agents.agent import Agent
 import os
 from datetime import datetime
+
+
+
 
 
 class DQN(nn.Module):
@@ -42,20 +49,23 @@ class EpsilonGreedyDQN(Agent):
         self.target.to(self.device)
         self.step = 0
 
+
+    # Se calcula epsilon de forma dinámica. Estudiar como se calcula.
+    # Lo ideal sería que al inicio se diera más peso a la exploración y luego se fuera reduciendo.
     def epsilon(self):
         return self.eps_end + (self.eps_start - self.eps_end) * np.exp(
             -1.0 * self.step / self.eps_decay
         )
 
     def act(self, observation):
-        if np.random.rand() < self.epsilon():
+        if np.random.rand() < self.epsilon(): # Exploit
             self.step += 1
             return self.action_correspondance[
                 np.argmax(self.policy(observation).detach().cpu().numpy())
             ]
         self.step += 1
         return self.action_correspondance[
-            np.random.randint(0, len(self.action_correspondance))
+            np.random.randint(0, len(self.action_correspondance)) # Explore: Random action
         ]
     
     def save_model(self, path):
@@ -73,8 +83,9 @@ class EpsilonGreedyDQN(Agent):
 
 if __name__ == "__main__":
     input_size = 17
-    device = "cuda"
+    device = "cpu"
     agent = EpsilonGreedyDQN(input_size, device)
 
-    for step in range(10):
+    for step in range(1000):
+        agent.step = step
         print(agent.epsilon())
