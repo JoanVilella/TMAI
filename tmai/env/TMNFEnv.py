@@ -150,13 +150,36 @@ class TrackmaniaEnv(Env):
     @property
     def observation(self):
         return np.concatenate([self.viewer.get_obs(), [self.speed / 400]]) # Distancia de los rayos y la velocidad normalizada
-
     
+    """
+    @property
+    def reward(self):
+
+        print(f"display_speed: {self.state.display_speed}")
+        print(f"input_accelerate: {self.state.input_accelerate}")
+        print(f"input_brake: {self.state.input_brake}")
+        print(f"input_gas: {self.state.input_gas}")
+        print(f"input_left: {self.state.input_left}")
+        print(f"input_right: {self.state.input_right}")
+        print(f"input_steer: {self.state.input_steer}")
+        print(f"position: {self.state.position}")
+        print(f"race_time: {self.state.race_time}")
+        print(f"rotation_matrix: {self.state.rotation_matrix}")
+        print(f"time: {self.state.time}")
+        print(f"velocity: {self.state.velocity}")
+        print(f"yaw_pitch_roll: {self.state.yaw_pitch_roll}")
+
+        return self.speed
+
+    """
+
     @property
     def reward(self):
 
         speed = self.speed
         speed_reward = speed
+
+
         constant_reward = -0.3
 
         roll_reward = -abs(self.state.yaw_pitch_roll[2]) / 3.15
@@ -171,6 +194,21 @@ class TrackmaniaEnv(Env):
             # Si la velocidad es inferior a 10, se incrementa un contador de pasos de baja velocidad y se aplica una penalización adicional de -5 por cada paso
 
             speed_reward -= 50 
+
+        print(f"display_speed: {self.state.display_speed}")
+        print(f"input_accelerate: {self.state.input_accelerate}")
+        print(f"input_brake: {self.state.input_brake}")
+        print(f"input_gas: {self.state.input_gas}")
+        print(f"input_left: {self.state.input_left}")
+        print(f"input_right: {self.state.input_right}")
+        print(f"input_steer: {self.state.input_steer}")
+        print(f"position: {self.state.position}")
+        print(f"race_time: {self.state.race_time}")
+        print(f"rotation_matrix: {self.state.rotation_matrix}")
+        print(f"time: {self.state.time}")
+        print(f"velocity: {self.state.velocity}")
+        print(f"yaw_pitch_roll: {self.state.yaw_pitch_roll}")
+
 
 
         return speed_reward + roll_reward + constant_reward 
