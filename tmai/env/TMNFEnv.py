@@ -80,7 +80,7 @@ class TrackmaniaEnv(Env):
         self.action_to_command(action)
         done = (
             True
-            if self.n_steps >= self.max_steps or self.total_reward < -300 #TODO 300
+            if self.n_steps >= self.max_steps or self.total_reward < -5 #TODO 300
             else False
         )
         self.total_reward += self.reward
@@ -151,6 +151,31 @@ class TrackmaniaEnv(Env):
     def observation(self):
         return np.concatenate([self.viewer.get_obs(), [self.speed / 400]]) # Distancia de los rayos y la velocidad normalizada
     
+    @property
+    def reward(self):
+        speed = self.speed
+        speed_reward = speed / 400  # La recompensa es proporcional a la velocidad y se normaliza dividiendo por 400 (valor maximo)
+
+        # Constant reward
+        constant_reward = -0.3
+
+        # Calcula una penalización basada en el ángulo de inclinación del vehículo (si se pone boca abajo, se penaliza)
+        roll_reward = -abs(self.state.yaw_pitch_roll[2]) / 3.15
+
+        # Calcula una penalización basada en pitch, por si se levanta mucho la nariz
+        pitch_reward = -abs(self.state.yaw_pitch_roll[1]) / 3.15
+
+        # Si el valor de todos los rayos es 0 (no hay obstáculos), se aplica una penalización adicional de -100
+        if sum(self.observation[:-1]) < 0.06:
+            constant_reward = -1
+
+        # Print speed reward and roll reward
+        print(f"speed reward: {speed_reward}, roll reward: {roll_reward}, self.observation: {self.observation}")
+
+
+
+        return speed_reward + roll_reward + constant_reward + pitch_reward
+    
     """
     @property
     def reward(self):
@@ -172,7 +197,7 @@ class TrackmaniaEnv(Env):
         return self.speed
 
     """
-
+    """
     @property
     def reward(self):
 
@@ -212,6 +237,8 @@ class TrackmaniaEnv(Env):
 
 
         return speed_reward + roll_reward + constant_reward 
+
+    """
             
 
 

@@ -31,7 +31,7 @@ class EpsilonGreedyDQN(Agent):
         self.device = device
         self.eps_start = 0.9
         self.eps_end = eps
-        self.eps_decay = 200
+        self.eps_decay = 200000 # TODO 200
         self.action_correspondance = {
             i + 2 * j + 4 * k + 8 * l: [i, j, k, l]
             for i in range(2)
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     epsilon_values = []
 
-    for step in range(1000):
+    for step in range(1000000):
         agent.step = step
         epsilon_values.append(agent.epsilon())
 
