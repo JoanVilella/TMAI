@@ -9,10 +9,6 @@ from tmai.agents.agent import Agent
 import os
 from datetime import datetime
 
-
-
-
-
 class DQN(nn.Module):
     def __init__(self, input_size, output_size, mid_size=32, p=0.5) -> None:
         super().__init__()
@@ -82,10 +78,24 @@ class EpsilonGreedyDQN(Agent):
 
 
 if __name__ == "__main__":
+
+    os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
+
     input_size = 17
     device = "cpu"
     agent = EpsilonGreedyDQN(input_size, device)
 
+    import matplotlib.pyplot as plt
+
+    epsilon_values = []
+
     for step in range(1000):
         agent.step = step
-        print(agent.epsilon())
+        epsilon_values.append(agent.epsilon())
+
+    plt.plot(epsilon_values)
+    plt.xlabel('Step')
+    plt.ylabel('Epsilon')
+    plt.title('Epsilon Decay')
+    plt.show()
