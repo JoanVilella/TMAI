@@ -61,7 +61,7 @@ class TrackmaniaEnv(Env):
         self.simthread = ThreadedClient()
         self.total_reward = 0.0
         self.n_steps = 0
-        self.max_steps = 1000
+        self.max_steps = 120 # Max steps per episode 1000 = 8min and 20 seconds TODO 1000
         self.command_frequency = 50
         self.last_action = None
         self.low_speed_steps = 0
@@ -80,7 +80,7 @@ class TrackmaniaEnv(Env):
         self.action_to_command(action)
         done = (
             True
-            if self.n_steps >= self.max_steps or self.total_reward < -5 #TODO 300
+            if self.n_steps >= self.max_steps or self.total_reward < -300 #TODO 300
             else False
         )
         self.total_reward += self.reward
@@ -153,6 +153,52 @@ class TrackmaniaEnv(Env):
     
     @property
     def reward(self):
+
+        reward = self.speed
+
+        if self.speed < 5:
+            reward -= 100
+
+        return reward
+    
+    """
+    @property
+    def reward(self):
+        reward = 0
+    
+        # Penalizar movimientos de volcado excesivos
+        roll_penalty = -abs(self.state.yaw_pitch_roll[2]) / 3.15
+        reward += roll_penalty
+        
+        # Penalizar velocidad baja o alta
+        if 10 < self.speed < 50:  # Velocidad objetivo entre 10 y 50
+            # Penalizar si la velocidad está fuera del rango objetivo
+            speed_penalty = -abs(30 - self.speed)  # Penalización proporcional a la distancia de la velocidad actual al objetivo (30)
+            reward += speed_penalty
+        else:
+            # Penalizar fuertemente si la velocidad es demasiado baja o demasiado alta
+            reward -= 50
+        
+        # Penalizar si la observación está muy cercana al suelo
+        if sum(self.observation[:-1]) < 0.06:
+            # Penalización adicional si la observación es muy cercana al suelo
+            reward -= 50
+        
+        # Penalizar si el pitch está mirando hacia arriba (pitch positivo)
+        pitch_penalty = -abs(self.state.yaw_pitch_roll[1]) / 3.15
+        reward += pitch_penalty
+        
+        # Recompensa constante para mantener un incentivo constante
+        constant_reward = -0.3
+        reward += constant_reward
+
+        return reward
+
+    """
+    
+    """
+    @property
+    def reward(self):
         speed = self.speed
         speed_reward = speed / 400  # La recompensa es proporcional a la velocidad y se normaliza dividiendo por 400 (valor maximo)
 
@@ -170,11 +216,13 @@ class TrackmaniaEnv(Env):
             constant_reward = -1
 
         # Print speed reward and roll reward
-        print(f"speed reward: {speed_reward}, roll reward: {roll_reward}, self.observation: {self.observation}")
+        # print(f"speed reward: {speed_reward}, roll reward: {roll_reward}, self.observation: {self.observation}")
 
 
 
         return speed_reward + roll_reward + constant_reward + pitch_reward
+
+    """
     
     """
     @property
@@ -197,13 +245,13 @@ class TrackmaniaEnv(Env):
         return self.speed
 
     """
+
     """
     @property
     def reward(self):
 
         speed = self.speed
         speed_reward = speed
-
 
         constant_reward = -0.3
 
@@ -220,26 +268,10 @@ class TrackmaniaEnv(Env):
 
             speed_reward -= 50 
 
-        print(f"display_speed: {self.state.display_speed}")
-        print(f"input_accelerate: {self.state.input_accelerate}")
-        print(f"input_brake: {self.state.input_brake}")
-        print(f"input_gas: {self.state.input_gas}")
-        print(f"input_left: {self.state.input_left}")
-        print(f"input_right: {self.state.input_right}")
-        print(f"input_steer: {self.state.input_steer}")
-        print(f"position: {self.state.position}")
-        print(f"race_time: {self.state.race_time}")
-        print(f"rotation_matrix: {self.state.rotation_matrix}")
-        print(f"time: {self.state.time}")
-        print(f"velocity: {self.state.velocity}")
-        print(f"yaw_pitch_roll: {self.state.yaw_pitch_roll}")
 
-
-
-        return speed_reward + roll_reward + constant_reward 
+        return speed_reward + roll_reward + constant_reward  
 
     """
-            
 
 
     """    

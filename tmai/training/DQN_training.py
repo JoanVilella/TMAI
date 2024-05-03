@@ -91,8 +91,10 @@ class DQN_trainer:
             while not done:
                 prev_obs = observation
                 action = self.agent.act(observation)
-                action[0] = 1
-                action[1] = 0
+                action[0] = 1 # Aquí fuerza que siempre acelere?
+                # action[1] = 0
+                # Print action
+                print(action)
                 observation, reward, done, time = self.env.step(action)
                 transition = Transition(prev_obs, action, observation, reward, done)
                 episode.append(transition)

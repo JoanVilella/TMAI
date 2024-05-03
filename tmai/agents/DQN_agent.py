@@ -26,7 +26,7 @@ class DQN(nn.Module):
 
 
 class EpsilonGreedyDQN(Agent):
-    def __init__(self, input_size, device, eps=1e-3) -> None:
+    def __init__(self, input_size, device, eps=1e-3) -> None: # eps=1e-3
         super().__init__()
         self.device = device
         self.eps_start = 0.9
@@ -49,9 +49,14 @@ class EpsilonGreedyDQN(Agent):
     # Se calcula epsilon de forma dinámica. Estudiar como se calcula.
     # Lo ideal sería que al inicio se diera más peso a la exploración y luego se fuera reduciendo.
     def epsilon(self):
-        return self.eps_end + (self.eps_start - self.eps_end) * np.exp(
+        epsilon = self.eps_end + (self.eps_start - self.eps_end) * np.exp(
             -1.0 * self.step / self.eps_decay
         )
+
+        if epsilon < 0.05: # TODO define a minimum epsilon
+            epsilon = 0.05
+
+        return epsilon
 
     def act(self, observation):
         if np.random.rand() < self.epsilon(): # Exploit
@@ -59,7 +64,7 @@ class EpsilonGreedyDQN(Agent):
             return self.action_correspondance[
                 np.argmax(self.policy(observation).detach().cpu().numpy())
             ]
-        self.step += 1
+        self.step += 1 
         return self.action_correspondance[
             np.random.randint(0, len(self.action_correspondance)) # Explore: Random action
         ]
