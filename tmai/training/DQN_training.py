@@ -9,6 +9,7 @@ from tmai.env.TMNFEnv import TrackmaniaEnv
 from tmai.training.utils import Buffer, Transition, play_episode
 from tmai.agents.DQN_agent import EpsilonGreedyDQN
 import numpy as np
+import datetime
 
 """
     Gamma (discount factor): If we set gamma to zero, the agent completely ignores the future rewards. 
@@ -81,6 +82,7 @@ class DQN_trainer:
         cumulative_reward_list = []
         episode_length_list = []
 
+
         for epoch in range(self.N_epochs):
             self.env.reset()
             episode = []
@@ -94,7 +96,7 @@ class DQN_trainer:
                 action[0] = 1 # Aquí fuerza que siempre acelere?
                 # action[1] = 0
                 # Print action
-                print(action)
+                # print(action)
                 observation, reward, done, time = self.env.step(action)
                 transition = Transition(prev_obs, action, observation, reward, done)
                 episode.append(transition)
@@ -109,8 +111,8 @@ class DQN_trainer:
             episode_length_list.append(time)
 
             # Save the metrics to a file
-            np.save('cumulative_reward_list.npy', cumulative_reward_list)
-            np.save('episode_length_list.npy', episode_length_list)
+            np.save('cumulative_reward_list_10k_True_Baseline.npy', cumulative_reward_list)
+            np.save('episode_length_list_10k_True_Baseline.npy', episode_length_list)
 
 
             self.buffer.append_multiple(episode)
@@ -125,7 +127,15 @@ class DQN_trainer:
 
         print("training finished")
 
+
 if __name__ == "__main__":
     trainer = DQN_trainer(N_epochs=10000)
     print("training")
+    # Print start time
+    print("Start time")
+    print(datetime.datetime.now())
     trainer.train()
+
+    # Print end time
+    print("End time")
+    print(datetime.datetime.now())

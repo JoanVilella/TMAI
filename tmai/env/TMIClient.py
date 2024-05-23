@@ -4,7 +4,6 @@ from threading import Lock, Thread
 from tminterface.client import Client
 from tminterface.interface import TMInterface
 
-
 class SimStateClient(Client):
     """
     Client for a TMInterface instance.

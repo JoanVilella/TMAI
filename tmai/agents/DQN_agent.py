@@ -59,14 +59,18 @@ class EpsilonGreedyDQN(Agent):
         return epsilon
 
     def act(self, observation):
-        if np.random.rand() < self.epsilon(): # Exploit
-            self.step += 1
+        epsilon = self.epsilon()
+        # print(f"Step: {self.step}, Epsilon: {epsilon}")
+        option = np.random.rand() < epsilon
+        # print(f"Option: {option}")
+        if option: # Explore
+            self.step += 1 
             return self.action_correspondance[
-                np.argmax(self.policy(observation).detach().cpu().numpy())
+                np.random.randint(0, len(self.action_correspondance)) # Explore: Random action
             ]
-        self.step += 1 
+        self.step += 1 # Exploit
         return self.action_correspondance[
-            np.random.randint(0, len(self.action_correspondance)) # Explore: Random action
+            np.argmax(self.policy(observation).detach().cpu().numpy())
         ]
     
     def save_model(self, path):
@@ -95,7 +99,7 @@ if __name__ == "__main__":
 
     epsilon_values = []
 
-    for step in range(1000000):
+    for step in range(200000):
         agent.step = step
         epsilon_values.append(agent.epsilon())
 

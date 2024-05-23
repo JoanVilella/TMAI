@@ -65,6 +65,7 @@ class TrackmaniaEnv(Env):
         self.command_frequency = 50
         self.last_action = None
         self.low_speed_steps = 0
+        self.contact_steps = 0
 
     """
     action[0] = up
@@ -152,6 +153,10 @@ class TrackmaniaEnv(Env):
         return np.concatenate([self.viewer.get_obs(), [self.speed / 400]]) # Distancia de los rayos y la velocidad normalizada
     
     @property
+    def has_lateral_contact(self):
+        return self.state.scene_mobil.has_any_lateral_contact
+    
+    @property
     def reward(self):
 
         reward = self.speed
@@ -160,6 +165,40 @@ class TrackmaniaEnv(Env):
             reward -= 100
 
         return reward
+
+
+    """
+    @property
+    def reward(self):
+        reward = self.speed
+        
+        # Penalizar si la velocidad es muy baja
+        low_speed_penalty = 0
+        if self.speed < 5:
+            self.low_speed_steps += 1
+            if self.low_speed_steps > 6: # 3 seconds aprox
+                low_speed_penalty -= 1000  # Penalizar fuertemente si ha estado en baja velocidad por más de 6 pasos
+        else:
+            self.low_speed_steps = 0  # Reiniciar contador si la velocidad es adecuada
+        
+        # Penalización por contacto lateral
+        max_contact_steps = 1  # Definir el máximo de pasos permitidos en contacto lateral
+        contact_penalty = 0
+        if self.has_lateral_contact:
+            self.contact_steps += 1
+            if self.contact_steps > max_contact_steps:
+                contact_penalty -= 5 * (self.contact_steps - max_contact_steps)  # Penalizar proporcionalmente
+        else:
+            self.contact_steps = 0  # Reiniciar contador si no hay contacto lateral
+
+        total_reward = reward + contact_penalty + low_speed_penalty
+        
+        # Imprimir la recompensa por velocidad y las penalizaciones
+        # print(f"Speed Reward: {reward}, Contact Penalty: {contact_penalty}, Low Speed Penalty: {low_speed_penalty}, Total Reward: {total_reward}")
+        
+        return total_reward
+    """
+
     
     """
     @property
