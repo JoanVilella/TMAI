@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from tmai.agents.DQN_base import DQNBase
+from tmai.agents.aa_DQN_base import DQNBase
 
 class LinearDQN(DQNBase):
     def __init__(self, input_size, output_size, mid_size=32, p=0.5):
