@@ -4,8 +4,8 @@ import numpy as np
 import torch
 from tmai.agents.agent import Agent
 from tmai.agents.aa_DQN_base import DQNBase
-from tmai.agents.Linear_DQN import LinearDQN
-from tmai.agents.aa_Linear_DQN import ConvDQN
+from tmai.agents.aa_Linear_DQN import Linear_DQN
+from tmai.agents.aa_CNN_DQN_agent import CNN_DQN
 
 
 
@@ -69,8 +69,8 @@ if __name__ == "__main__":
 
     input_size = 17  # or whatever your input size is
     device = "cpu"
-    agent_linear = EpsilonGreedyDQN(input_size, device, model_cls=LinearDQN)
-    agent_conv = EpsilonGreedyDQN(input_size, device, model_cls=ConvDQN)
+    agent_linear = EpsilonGreedyDQN(input_size, device, model_cls=Linear_DQN)
+    agent_conv = EpsilonGreedyDQN(input_size, device, model_cls=CNN_DQN)
 
     import matplotlib.pyplot as plt
 

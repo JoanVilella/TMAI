@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from tmai.agents.aa_DQN_base import DQNBase
 
-class LinearDQN(DQNBase):
+class Linear_DQN(DQNBase):
     def __init__(self, input_size, output_size, mid_size=32, p=0.5):
         super().__init__()
         self.fc1 = nn.Linear(input_size, mid_size)

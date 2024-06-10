@@ -34,15 +34,31 @@ class GameViewer:
     def process_screen(self, screenshot: np.ndarray) -> np.ndarray:
         output_dir = "C:/Users/jvile/Desktop/TFG/TMAI/images"
 
+        # Convertir la imagen de BGR a escala de grises
         baw = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+
+        # Aplicar un umbral para convertir la imagen a binaria
         baw = cv2.threshold(baw, 32, 255, cv2.THRESH_BINARY)[1]
+
+        # Aplicar el detector de bordes Canny
         baw = cv2.Canny(baw, threshold1=100, threshold2=300)
+
+        # Crear un elemento estructurante para la dilatación
         element = cv2.getStructuringElement(shape=cv2.MORPH_RECT, ksize=(5, 5))
+
+        # Dilatar la imagen para aumentar los bordes detectados
         baw = cv2.dilate(baw, element, iterations=3)
+
+        # Aplicar un desenfoque gaussiano para suavizar la imagen
         baw = cv2.GaussianBlur(baw, (3, 3), 0)
+
+        # Aplicar otro umbral para convertir nuevamente la imagen a binaria
         baw = cv2.threshold(baw, 1, 255, cv2.THRESH_BINARY)[1]
 
+        # Redimensionar la imagen a 128x128 píxeles
         baw = cv2.resize(baw, (128, 128))
+
+        # Cortar una porción de la imagen: los 32 píxeles centrales verticalmente
         height = len(baw)
         cut = baw[height // 2 : height // 2 + 32, :]
 
@@ -125,6 +141,22 @@ class GameViewer:
         ]
 
         return np.array(distances).astype(np.float32)
+    
+    def get_conv_obs(self):
+        # Obtener la imagen en bruto
+        img = self.get_raw_frame()
+
+        # Convertir la imagen a escala de grises
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        # Realizar el mismo recorte de imagen que en el método process_screen
+        height = len(gray_img)
+        cut = gray_img[height // 2 : height // 2 + 32, :]
+
+        # Redimensionar la imagen a 128x128 píxeles
+        resized_cut = cv2.resize(cut, (128, 128))
+
+        return resized_cut
 
     def get_frame(
         self,
