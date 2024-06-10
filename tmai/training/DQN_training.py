@@ -9,7 +9,14 @@ from tmai.env.TMNFEnv import TrackmaniaEnv
 from tmai.training.utils import Buffer, Transition, play_episode
 from tmai.agents.DQN_agent import EpsilonGreedyDQN
 import numpy as np
+import datetime
 
+"""
+    Gamma (discount factor): If we set gamma to zero, the agent completely ignores the future rewards. 
+        Such agents only consider current rewards. On the other hand, if we set gamma to 1, 
+        the algorithm would look for high rewards in the long term. A high gamma value might prevent 
+        conversion: summing up non-discounted rewards leads to having high Q-values.
+"""
 
 class DQN_trainer:
     def __init__(self, batch_size=32, N_epochs=100):
@@ -75,6 +82,7 @@ class DQN_trainer:
         cumulative_reward_list = []
         episode_length_list = []
 
+
         for epoch in range(self.N_epochs):
             self.env.reset()
             episode = []
@@ -85,13 +93,15 @@ class DQN_trainer:
             while not done:
                 prev_obs = observation
                 action = self.agent.act(observation)
-                action[0] = 1
-                action[1] = 0
+                action[0] = 1 # Aquí fuerza que siempre acelere?
+                # action[1] = 0
+                # Print action
+                # print(action)
                 observation, reward, done, time = self.env.step(action)
                 transition = Transition(prev_obs, action, observation, reward, done)
                 episode.append(transition)
                 step += 1
-                self.env.render()
+                # self.env.render()
                 self.optimze_step()   
             
             # Save the total reward of the episode
@@ -101,8 +111,8 @@ class DQN_trainer:
             episode_length_list.append(time)
 
             # Save the metrics to a file
-            np.save('cumulative_reward_list.npy', cumulative_reward_list)
-            np.save('episode_length_list.npy', episode_length_list)
+            np.save('cumulative_reward_list_10k_True_Baseline.npy', cumulative_reward_list)
+            np.save('episode_length_list_10k_True_Baseline.npy', episode_length_list)
 
 
             self.buffer.append_multiple(episode)
@@ -117,7 +127,15 @@ class DQN_trainer:
 
         print("training finished")
 
+
 if __name__ == "__main__":
-    trainer = DQN_trainer(N_epochs=10)
+    trainer = DQN_trainer(N_epochs=10000)
     print("training")
+    # Print start time
+    print("Start time")
+    print(datetime.datetime.now())
     trainer.train()
+
+    # Print end time
+    print("End time")
+    print(datetime.datetime.now())

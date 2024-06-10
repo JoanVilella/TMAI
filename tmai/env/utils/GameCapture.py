@@ -177,7 +177,7 @@ class GameViewer:
             )
             if it % 20 == 0:
                 obs = self.get_obs()
-                print(min(obs))
+                print(obs)
             if (cv2.waitKey(1) & 0xFF) == ord("q"):
                 cv2.destroyAllWindows()
                 break

@@ -4,7 +4,6 @@ from threading import Lock, Thread
 from tminterface.client import Client
 from tminterface.interface import TMInterface
 
-
 class SimStateClient(Client):
     """
     Client for a TMInterface instance.
@@ -21,7 +20,11 @@ class SimStateClient(Client):
     def on_checkpoint_count_changed(self, iface, current: int, target: int):
         if current == target:
             iface.prevent_simulation_finish()
-            iface.give_up()   
+            iface.give_up()
+
+            # Write the time when the simulation ended to a file
+            with open("end_time.txt", "a") as f:
+                f.write(time.strftime("%H:%M:%S") + "\n")
 
 
 class ThreadedClient:
