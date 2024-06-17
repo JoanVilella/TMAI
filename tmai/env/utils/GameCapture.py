@@ -153,7 +153,7 @@ class GameViewer:
         raw_output_dir = "C:/Users/jvile/Desktop/TFG/TMAI/raw_images"
         raw_filename = f"raw_image_{time_stamp}.png"
         raw_output_path = os.path.join(raw_output_dir, raw_filename)
-        cv2.imwrite(raw_output_path, raw_img)
+        # cv2.imwrite(raw_output_path, raw_img)
 
         # Convertir la imagen a escala de grises
         gray_img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2GRAY)
@@ -169,7 +169,7 @@ class GameViewer:
         processed_output_dir = "C:/Users/jvile/Desktop/TFG/TMAI/cnn_images"
         processed_filename = f"Pimage_{time_stamp}.png"
         processed_output_path = os.path.join(processed_output_dir, processed_filename)
-        cv2.imwrite(processed_output_path, resized_cut)
+        # cv2.imwrite(processed_output_path, resized_cut)
 
         return resized_cut
 

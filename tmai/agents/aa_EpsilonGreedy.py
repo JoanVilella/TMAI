@@ -11,9 +11,6 @@ from tmai.agents.aa_Linear_DQN import Linear_DQN
 from tmai.agents.aa_CNN_DQN_agent import CNN_DQN
 
 
-
-
-
 class EpsilonGreedyDQN(Agent):
     def __init__(self, input_size, device, model_cls, eps=1e-3):
         super().__init__()

@@ -88,7 +88,8 @@ class TrackmaniaEnv(Env):
         self.n_steps += 1
         info = self.state.time
         time.sleep(self.command_frequency * 10e-3)
-        return self.observation, self.reward, done, info
+        # TODO check if observation or conv_observation
+        return self.conv_observation, self.reward, done, info
 
     def reset(self):
         # print("reset")
@@ -100,7 +101,7 @@ class TrackmaniaEnv(Env):
         self.low_speed_steps = 0
         print("reset done")
 
-        return self.observation
+        return self.conv_observation
 
     def render(self, mode="human"):
         print(f"total reward: {self.total_reward}")
@@ -150,7 +151,22 @@ class TrackmaniaEnv(Env):
 
     @property
     def observation(self):
-        return np.concatenate([self.viewer.get_obs(), [self.speed / 400]]) # Distancia de los rayos y la velocidad normalizada
+        observation = np.concatenate([self.viewer.get_obs(), [self.speed / 400]])
+
+        print(f"observation: {observation}")
+        # Print type and shape of observation
+        print(f"Type: {type(observation)}, Shape: {observation.shape}")
+        return observation
+    
+    @property
+    def conv_observation(self): 
+
+        conv_observation = self.viewer.get_conv_obs()
+        conv_observation = conv_observation.flatten()
+        print(f"conv_observation: {conv_observation}")    
+        # Print type and shape of observation
+        print(f"Type: {type(conv_observation)}, Shape: {conv_observation.shape}")   
+        return conv_observation
     
     @property
     def has_lateral_contact(self):

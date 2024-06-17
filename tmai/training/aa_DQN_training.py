@@ -7,7 +7,9 @@ sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
 
 from tmai.env.TMNFEnv import TrackmaniaEnv
 from tmai.training.utils import Buffer, Transition, play_episode
-from tmai.agents.DQN_agent import EpsilonGreedyDQN
+from tmai.agents.aa_EpsilonGreedy import EpsilonGreedyDQN
+from tmai.agents.aa_CNN_DQN_agent import CNN_DQN
+from tmai.agents.aa_Linear_DQN import Linear_DQN
 import numpy as np
 import datetime
 
@@ -28,7 +30,9 @@ class DQN_trainer:
         self.buffer = Buffer(capacity=10000)
         self.env = TrackmaniaEnv(action_space="arrows")
         self.agent = EpsilonGreedyDQN(
-            input_size=self.env.observation_space.shape[0], device=self.device
+            input_size=self.env.observation_space.shape[0], 
+            device=self.device,
+            model_cls=CNN_DQN
         )
 
         # print input size
@@ -111,8 +115,8 @@ class DQN_trainer:
             episode_length_list.append(time)
 
             # Save the metrics to a file
-            np.save('cumulative_reward_list_10k_True_Baseline.npy', cumulative_reward_list)
-            np.save('episode_length_list_10k_True_Baseline.npy', episode_length_list)
+            #np.save('cumulative_reward_list_10k_True_Baseline.npy', cumulative_reward_list)
+            #np.save('episode_length_list_10k_True_Baseline.npy', episode_length_list)
 
 
             self.buffer.append_multiple(episode)
