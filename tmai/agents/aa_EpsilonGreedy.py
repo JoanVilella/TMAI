@@ -1,4 +1,7 @@
 import os
+import sys
+sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
+
 from datetime import datetime
 import numpy as np
 import torch
@@ -9,8 +12,10 @@ from tmai.agents.aa_CNN_DQN_agent import CNN_DQN
 
 
 
+
+
 class EpsilonGreedyDQN(Agent):
-    def __init__(self, input_size, device, model_cls=DQNBase, eps=1e-3):
+    def __init__(self, input_size, device, model_cls, eps=1e-3):
         super().__init__()
         self.device = device
         self.eps_start = 0.9
@@ -25,6 +30,8 @@ class EpsilonGreedyDQN(Agent):
         }
 
         print(len(self.action_correspondance))
+        # No es necesario definir input size para la red convolucional 
+        # Pero como también se puede llamar a la red lineal, se deja
         self.policy = model_cls(input_size, len(self.action_correspondance))
         self.target = model_cls(input_size, len(self.action_correspondance))
         self.policy.to(self.device)
