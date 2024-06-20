@@ -26,7 +26,7 @@ class EpsilonGreedyDQN(Agent):
             for l in range(2)
         }
 
-        print(len(self.action_correspondance))
+        print("Number of actions correspondance:", len(self.action_correspondance))
         # No es necesario definir input size para la red convolucional 
         # Pero como también se puede llamar a la red lineal, se deja
         self.policy = model_cls(input_size, len(self.action_correspondance))

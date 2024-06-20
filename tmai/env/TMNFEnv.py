@@ -13,6 +13,7 @@ from tmai.env.utils.GameInteraction import (
     KeyboardInputManager,
 )
 from tmai.env.utils.GameLaunch import GameLauncher
+import torch
 
 import sys
 sys.path.append("C:/Users/jvile/Desktop/TFG/TMAI")
@@ -162,10 +163,11 @@ class TrackmaniaEnv(Env):
     def conv_observation(self): 
 
         conv_observation = self.viewer.get_conv_obs()
-        conv_observation = conv_observation.flatten()
+        # conv_observation = conv_observation.flatten()
         print(f"conv_observation: {conv_observation}")    
         # Print type and shape of observation
-        print(f"Type: {type(conv_observation)}, Shape: {conv_observation.shape}")   
+        print(f"Type: {type(conv_observation)}, Shape: {conv_observation.shape}")  
+        conv_observation = torch.tensor(conv_observation, dtype=torch.float32).unsqueeze(0)
         return conv_observation
     
     @property
