@@ -18,6 +18,7 @@ class EpsilonGreedyDQN(Agent):
         self.eps_start = 0.9
         self.eps_end = eps
         self.eps_decay = 200000
+        # Mapea las acciones a los índices de la red. 16 acciones posibles de [0, 0, 0, 0] a [1, 1, 1, 1]
         self.action_correspondance = {
             i + 2 * j + 4 * k + 8 * l: [i, j, k, l]
             for i in range(2)
@@ -26,7 +27,7 @@ class EpsilonGreedyDQN(Agent):
             for l in range(2)
         }
 
-        print("Number of actions correspondance:", len(self.action_correspondance))
+        # print("Number of actions correspondance:", len(self.action_correspondance))
         # No es necesario definir input size para la red convolucional 
         # Pero como también se puede llamar a la red lineal, se deja
         self.policy = model_cls(input_size, len(self.action_correspondance))

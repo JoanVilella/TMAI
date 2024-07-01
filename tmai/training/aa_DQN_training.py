@@ -97,6 +97,8 @@ class DQN_trainer:
             while not done:
                 prev_obs = observation
                 action = self.agent.act(observation)
+                # Quiero forzar que no haga nada, pon todos los valores de action a 0                
+
                 action[0] = 1 # Aquí fuerza que siempre acelere?
                 # action[1] = 0
                 # Print action
@@ -115,8 +117,8 @@ class DQN_trainer:
             episode_length_list.append(time)
 
             # Save the metrics to a file
-            #np.save('cumulative_reward_list_10k_True_Baseline.npy', cumulative_reward_list)
-            #np.save('episode_length_list_10k_True_Baseline.npy', episode_length_list)
+            np.save('cumulative_reward_list_10k_CNN_Baseline.npy', cumulative_reward_list)
+            np.save('episode_length_list_10k_CNN_Baseline.npy', episode_length_list)
 
 
             self.buffer.append_multiple(episode)

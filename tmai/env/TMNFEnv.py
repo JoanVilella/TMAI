@@ -78,7 +78,7 @@ class TrackmaniaEnv(Env):
     def step(self, action):
         self.last_action = action
         # print(f"action: {action}") # Array with 2 values
-        # plays action
+
         self.action_to_command(action)
         done = (
             True
@@ -163,17 +163,57 @@ class TrackmaniaEnv(Env):
     def conv_observation(self): 
 
         conv_observation = self.viewer.get_conv_obs()
+        # Normalize the observation
+        conv_observation = conv_observation / 255.0
         # conv_observation = conv_observation.flatten()
-        print(f"conv_observation: {conv_observation}")    
+        # print(f"conv_observation: {conv_observation}")    
         # Print type and shape of observation
-        print(f"Type: {type(conv_observation)}, Shape: {conv_observation.shape}")  
+        # print(f"Type: {type(conv_observation)}, Shape: {conv_observation.shape}")  
         conv_observation = torch.tensor(conv_observation, dtype=torch.float32).unsqueeze(0)
+
+        # Print type and shape of observation
+        # print(f"Type: {type(conv_observation)}, Shape: {conv_observation.shape}")
         return conv_observation
     
     @property
     def has_lateral_contact(self):
         return self.state.scene_mobil.has_any_lateral_contact
     
+    @property
+    def checkpoint_Data(self):
+        return self.state.cp_data
+    
+    @property
+    def reward(self):
+        cp_data = self.checkpoint_Data
+        speed = self.speed
+
+        # Información de los checkpoints
+        cp_states = cp_data.cp_states  # Array booleano indicando checkpoints pasados
+        cp_times = cp_data.cp_times  # Array de tiempos de checkpoints
+
+        # Recompensa base por velocidad
+        reward = speed
+
+        # Penalización por velocidad baja
+        if speed < 5:
+            reward -= 100
+
+        # Recompensa por pasar checkpoints
+        for i in range(len(cp_states)):
+            if cp_states[i]:  # Si el checkpoint ha sido pasado
+                reward += 50  # Recompensa fija por pasar un checkpoint
+
+        # Recompensa continua basada en progreso
+        total_checkpoints = len(cp_states)
+        passed_checkpoints = sum(cp_states)
+        progress_ratio = passed_checkpoints / total_checkpoints
+        reward += progress_ratio * 100  # Recompensa proporcional al progreso
+
+        return reward
+
+    
+    """
     @property
     def reward(self):
 
@@ -183,6 +223,7 @@ class TrackmaniaEnv(Env):
             reward -= 100
 
         return reward
+    """
 
 
     """
