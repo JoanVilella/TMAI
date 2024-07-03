@@ -116,9 +116,7 @@ class DQN_trainer:
             # Save the last time of the episode
             episode_length_list.append(time)
 
-            # Save the metrics to a file
-            np.save('cumulative_reward_list_10k_CNN_Baseline.npy', cumulative_reward_list)
-            np.save('episode_length_list_10k_CNN_Baseline.npy', episode_length_list)
+
 
 
             self.buffer.append_multiple(episode)
@@ -130,6 +128,9 @@ class DQN_trainer:
             print(f"epoch: {epoch}")
 
         self.agent.save_model("C:/Users/jvile/Desktop/TFG/TMAI/models")
+        # Save the metrics to a file
+        np.save('cumulative_reward_list_10k_CNN_Baseline.npy', cumulative_reward_list)
+        np.save('episode_length_list_10k_CNN_Baseline.npy', episode_length_list)
 
         print("training finished")
 

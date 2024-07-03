@@ -190,27 +190,35 @@ class TrackmaniaEnv(Env):
 
         # Información de los checkpoints
         cp_states = cp_data.cp_states  # Array booleano indicando checkpoints pasados
-        cp_times = cp_data.cp_times  # Array de tiempos de checkpoints
+        # cp_times = cp_data.cp_times  # Array de tiempos de checkpoints
 
         # Recompensa base por velocidad
         reward = speed
+        print(f"Recompensa inicial por velocidad: {reward}")
 
         # Penalización por velocidad baja
         if speed < 5:
             reward -= 100
+            print(f"Penalización por velocidad baja (-100): {reward}")
 
         # Recompensa por pasar checkpoints
+        checkpoint_reward = 0
         for i in range(len(cp_states)):
             if cp_states[i]:  # Si el checkpoint ha sido pasado
-                reward += 50  # Recompensa fija por pasar un checkpoint
+                checkpoint_reward += 50  # Recompensa fija por pasar un checkpoint
+        reward += checkpoint_reward
+        print(f"Recompensa total por pasar checkpoints (+{checkpoint_reward}): {reward}")
 
         # Recompensa continua basada en progreso
         total_checkpoints = len(cp_states)
         passed_checkpoints = sum(cp_states)
         progress_ratio = passed_checkpoints / total_checkpoints
-        reward += progress_ratio * 100  # Recompensa proporcional al progreso
+        progress_reward = progress_ratio * 100  # Recompensa proporcional al progreso
+        reward += progress_reward
+        print(f"Recompensa continua basada en progreso (+{progress_reward}): {reward}")
 
         return reward
+
 
     
     """
